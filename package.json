@@ -4,8 +4,7 @@
   "description": "Brotli in JavaScript",
   "main": "index.js",
   "scripts": {
-    "build-wasm": "docker build --build-arg='BROTLI_TAG=v1.1.0' build-wasm -t brotli-build:latest && docker create --name temp_container brotli-build:latest && docker cp temp_container:/src/dist/brotli.js ./build-wasm/dist/brotli.js && docker cp temp_container:/src/dist/brotli.wasm ./build-wasm/dist/brotli.wasm && docker rm temp_container",
-    "build-wasm1": "docker build --build-arg='BROTLI_TAG=v1.1.0' build-wasm -t brotli-build:latest && docker create --name temp_container brotli-build:latest && docker cp temp_container:/src/dist/brotli.wasm ./build-wasm/dist/brotli.wasm && docker rm temp_container"
+    "build-wasm": "docker build --build-arg='BROTLI_TAG=v1.1.0' build-wasm -t brotli-build:latest && docker create --name temp_container brotli-build:latest && docker cp temp_container:/src/dist/brotli-compress.wasm ./build-wasm/dist/brotli-compress.wasm && docker rm temp_container"
   },
   "author": "",
   "license": "ISC"

@@ -16,6 +16,7 @@ COPY --from=source /src/brotli /src
 WORKDIR /src
 
 COPY exported_encode.c c/enc/exported_encode.c
+COPY compress.c c/custom/enc/compress.c
 
 RUN mkdir dist
 # RUN emcc -s WASM=1 -s EXPORTED_FUNCTIONS=_encode -s MODULARIZE \
@@ -27,12 +28,22 @@ RUN mkdir dist
 # RUN emcc -s WASM=1 -s EXPORTED_FUNCTIONS=_encode \
 #      c/enc/exported_encode.c \
 #      -o dist/brotli.js
-RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_encode', '_malloc', '_free']" -s STANDALONE_WASM -Oz \
+
+# compress
+RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_compress_buffer', '_free_buffer_result', '_encode', '_malloc', '_free']" -s STANDALONE_WASM -Oz \
      -I./c/include \
      c/common/*.c \
-     c/dec/*.c \
      c/enc/*.c \
-     -o dist/brotli.wasm
+     c/custom/enc/compress.c \
+     -o dist/brotli-compress.wasm
+
+# decompress
+# RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_decompress_buffer', '_malloc', '_free']" -s STANDALONE_WASM -Oz \
+#      -I./c/include \
+#      c/common/*.c \
+#      c/dec/*.c \
+#      c/custom/enc/compress.c \
+#      -o dist/brotli.wasm
 
 # RUN apt-get update -y && apt-get install -y wabt
 # RUN wasm-objdump -x dist/brotli.wasm | grep "import" && exit 1

@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const wasmBuffer = fs.readFileSync("./build-wasm/dist/brotli.wasm");
+const wasmBuffer = fs.readFileSync("./build-wasm/dist/brotli-compress.wasm");
 WebAssembly.instantiate(wasmBuffer, {
   wasi_snapshot_preview1: {
     proc_exit: (status) => {
@@ -12,8 +12,8 @@ WebAssembly.instantiate(wasmBuffer, {
     console.log("name", name);
   }
 
-  const { encode, malloc, free, memory } = wasmModule.instance.exports;
-  console.log("encode", encode);
+  const { compress_buffer, free_buffer_result, malloc, free, memory } =
+    wasmModule.instance.exports;
 
   const text = "this is simple text to be encoded.";
   const uint8Array = new TextEncoder().encode(text);
@@ -21,27 +21,34 @@ WebAssembly.instantiate(wasmBuffer, {
   try {
     new Uint8Array(memory.buffer).set(uint8Array, dataPtr);
 
-    const maxOutSize = 2_000;
-    const outputPtr = malloc(maxOutSize);
+    const resPtr = compress_buffer(0, 22, 0, uint8Array.length, dataPtr);
+    if (!resPtr) {
+      throw new Error("Failed to compress data.");
+    }
 
-    const encodedSize = encode(
-      0,
-      22,
-      0,
-      uint8Array.length,
-      dataPtr,
-      maxOutSize,
-      outputPtr
-    );
-    console.log("encodedSize", encodedSize);
+    try {
+      const redDataView = new DataView(memory.buffer);
+      const resBufferSize = redDataView.getUint32(resPtr, true);
+      const resBufferPtr = redDataView.getUint32(resPtr + 4, true);
+      const resDataLength = redDataView.getUint32(resPtr + 8, true);
 
-    const outBuffer = new Uint8Array(encodedSize);
-    outBuffer.set(
-      new Uint8Array(memory.buffer).subarray(outputPtr, outputPtr + encodedSize)
-    );
+      console.log("resBufferSize", resBufferSize);
+      console.log("resBufferPtr", resBufferPtr);
+      console.log("resDataLength", resDataLength);
 
-    console.log("outBuffer", outBuffer.length, outBuffer);
-    fs.writeFileSync("./output.br", outBuffer);
+      const outBuffer = new Uint8Array(resDataLength);
+      outBuffer.set(
+        new Uint8Array(memory.buffer).subarray(
+          resBufferPtr,
+          resBufferPtr + resDataLength
+        )
+      );
+
+      console.log("outBuffer", outBuffer.length, outBuffer);
+      fs.writeFileSync("./output.br", outBuffer);
+    } finally {
+      free_buffer_result(resPtr);
+    }
   } finally {
     free(dataPtr);
   }
