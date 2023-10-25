@@ -53,6 +53,9 @@ jobs:
 
         - name: Publish npm
           if: steps.checkReleaseExists.outputs.exists == 'false'
-          run: npm publish brotli-ts-${{ env.VERSION }}.tgz
+          run: |
+            set -e
+            echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
+            npm publish brotli-ts-${{ env.VERSION }}.tgz
           env:
-            NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
