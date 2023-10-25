@@ -15,6 +15,8 @@ COPY --from=source /src/brotli /src
 
 WORKDIR /src
 
+COPY utils.h c/include/custom/utils.h
+COPY utils.c c/common/utils.c
 COPY exported_encode.c c/enc/exported_encode.c
 COPY compress.c c/custom/enc/compress.c
 
