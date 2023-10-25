@@ -17,12 +17,9 @@ uint32_t* compress_buffer(int quality, int lgwin, int mode, size_t input_size, c
   }
 
   BrotliEncoderSetParameter(s, BROTLI_PARAM_QUALITY, (uint32_t)quality);
-  BrotliEncoderSetParameter(s, BROTLI_PARAM_LGWIN, (uint32_t)lgwin);
   BrotliEncoderSetParameter(s, BROTLI_PARAM_MODE, (uint32_t)mode);
   BrotliEncoderSetParameter(s, BROTLI_PARAM_SIZE_HINT, (uint32_t)input_size);
-  if (lgwin > BROTLI_MAX_WINDOW_BITS) {
-    BrotliEncoderSetParameter(s, BROTLI_PARAM_LARGE_WINDOW, BROTLI_TRUE);
-  }
+  set_lgwin(s, lgwin, input_size);
 
   size_t available_in = input_size;
   const uint8_t* next_in = input_buffer;

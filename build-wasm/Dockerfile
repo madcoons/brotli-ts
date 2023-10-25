@@ -32,8 +32,9 @@ RUN mkdir dist
 #      -o dist/brotli.js
 
 # compress
-RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_compress_buffer', '_free_buffer_result', '_encode', '_malloc', '_free']" -s STANDALONE_WASM -Oz \
+RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_compress_buffer', '_free_buffer_result', '_encode', '_malloc', '_free']" -s STANDALONE_WASM -s ALLOW_MEMORY_GROWTH -Oz \
      -I./c/include \
+     -I./c/common \
      c/common/*.c \
      c/enc/*.c \
      c/custom/enc/compress.c \
