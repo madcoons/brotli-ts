@@ -5,10 +5,10 @@
 uint32_t* compress_buffer(int quality, int lgwin, int mode, size_t input_size, const uint8_t* input_buffer){
   uint32_t* result = (uint32_t*)malloc(4/*buffer size*/ + 4/*buffer*/ + 4/*data length*/);
   size_t* buffer_size = (size_t*)&result[0];
-  uint8_t** encoded_buffer = (uint8_t**)&result[1];
+  uint8_t** out_buffer = (uint8_t**)&result[1];
   size_t* data_length = (size_t*)&result[2];
 
-  init_buffer_result(buffer_size, encoded_buffer, data_length);
+  init_buffer_result(buffer_size, out_buffer, data_length);
 
   BrotliEncoderState *s = BrotliEncoderCreateInstance(0, 0, 0);
   if (!s) {
@@ -24,7 +24,7 @@ uint32_t* compress_buffer(int quality, int lgwin, int mode, size_t input_size, c
   size_t available_in = input_size;
   const uint8_t* next_in = input_buffer;
   size_t available_out = *buffer_size;
-  uint8_t* next_out = *encoded_buffer;
+  uint8_t* next_out = *out_buffer;
   for(;;) {
     BROTLI_BOOL is_eof = available_in == 0;
 
@@ -48,7 +48,7 @@ uint32_t* compress_buffer(int quality, int lgwin, int mode, size_t input_size, c
     }
 
     if (available_out == 0) {
-      double_buffer_result(buffer_size, encoded_buffer, &available_out, &next_out);
+      double_buffer_result(buffer_size, out_buffer, &available_out, &next_out);
     }
   }
 }

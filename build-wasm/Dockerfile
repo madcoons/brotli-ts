@@ -17,8 +17,8 @@ WORKDIR /src
 
 COPY utils.h c/include/custom/utils.h
 COPY utils.c c/common/utils.c
-COPY exported_encode.c c/enc/exported_encode.c
 COPY compress.c c/custom/enc/compress.c
+COPY decompress.c c/custom/dec/decompress.c
 
 RUN mkdir dist
 # RUN emcc -s WASM=1 -s EXPORTED_FUNCTIONS=_encode -s MODULARIZE \
@@ -32,7 +32,7 @@ RUN mkdir dist
 #      -o dist/brotli.js
 
 # compress
-RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_compress_buffer', '_free_buffer_result', '_encode', '_malloc', '_free']" -s STANDALONE_WASM -s ALLOW_MEMORY_GROWTH -Oz \
+RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_compress_buffer', '_free_buffer_result', '_malloc', '_free']" -s STANDALONE_WASM -s ALLOW_MEMORY_GROWTH -Oz \
      -I./c/include \
      -I./c/common \
      c/common/*.c \
@@ -41,12 +41,13 @@ RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_compress_buffer
      -o dist/brotli-compress.wasm
 
 # decompress
-# RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_decompress_buffer', '_malloc', '_free']" -s STANDALONE_WASM -Oz \
-#      -I./c/include \
-#      c/common/*.c \
-#      c/dec/*.c \
-#      c/custom/enc/compress.c \
-#      -o dist/brotli.wasm
+RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_decompress_buffer', '_free_buffer_result', '_malloc', '_free']" -s STANDALONE_WASM -s ALLOW_MEMORY_GROWTH -Oz \
+     -I./c/include \
+     -I./c/common \
+     c/common/*.c \
+     c/dec/*.c \
+     c/custom/dec/decompress.c \
+     -o dist/brotli-decompress.wasm
 
 # RUN apt-get update -y && apt-get install -y wabt
 # RUN wasm-objdump -x dist/brotli.wasm | grep "import" && exit 1
