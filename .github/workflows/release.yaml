@@ -24,6 +24,10 @@ jobs:
           with: 
             tag: v${{ env.VERSION }}
 
+        - name: Install deps
+          if: steps.checkReleaseExists.outputs.exists == 'false'
+          run: npm ci
+
         - name: Build wasm
           if: steps.checkReleaseExists.outputs.exists == 'false'
           run: npm run build-wasm
