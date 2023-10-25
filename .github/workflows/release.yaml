@@ -28,6 +28,10 @@ jobs:
           if: steps.checkReleaseExists.outputs.exists == 'false'
           run: npm run build-wasm
 
+        - name: Build package
+          if: steps.checkReleaseExists.outputs.exists == 'false'
+          run: npm run build
+
         - name: Pack package
           if: steps.checkReleaseExists.outputs.exists == 'false'
           run: npm pack
