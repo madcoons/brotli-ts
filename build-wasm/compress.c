@@ -59,10 +59,12 @@ uint32_t* compress_buffer(int quality, int lgwin, int mode, size_t input_size, c
       data_length
     )) {
         free_buffer_result(result);
+        BrotliEncoderDestroyInstance(s);
         return NULL;
     }
 
     if (BrotliEncoderIsFinished(s)){
+      BrotliEncoderDestroyInstance(s);
       return result;
     }
 
