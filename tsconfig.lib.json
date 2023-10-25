@@ -1,0 +1,12 @@
+{
+    "extends": "@tsconfig/strictest",
+    "compilerOptions": {
+      "rootDir": "src",
+      "lib": ["DOM"], // Because of WebAssembly
+      "module": "ESNext",
+      "target": "ESNext",
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["node_modules", "dist"]
+  }
+  

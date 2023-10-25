@@ -1,0 +1,10 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+    "compilerOptions": {
+      "composite": true,
+      "lib": ["DOM"], // Because of WebAssembly
+      "types": ["node"],
+    },
+    "include": ["rollup.config.*.mjs", "rollup.config.mjs", "examples/node-from-relative/**/*.ts", "src/**/*.ts"],
+    "exclude": ["node_modules", "dist", "dist"]
+  }

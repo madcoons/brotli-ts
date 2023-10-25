@@ -4,8 +4,45 @@
   "description": "Brotli in JavaScript",
   "main": "index.js",
   "scripts": {
-    "build-wasm": "docker build --build-arg='BROTLI_TAG=v1.1.0' build-wasm -t brotli-build:latest && docker create --name temp_container brotli-build:latest && docker cp temp_container:/src/dist/brotli-compress.wasm ./build-wasm/dist/brotli-compress.wasm && docker cp temp_container:/src/dist/brotli-decompress.wasm ./build-wasm/dist/brotli-decompress.wasm && docker rm temp_container"
+    "build-wasm": "docker build --build-arg='BROTLI_TAG=v1.1.0' build-wasm -t brotli-build:latest && docker create --name temp_container brotli-build:latest && docker cp temp_container:/src/dist/brotli-encoder.wasm ./build-wasm/dist/brotli-encoder.wasm && docker cp temp_container:/src/dist/brotli-decoder.wasm ./build-wasm/dist/brotli-decoder.wasm && docker rm temp_container"
+  },
+  "exports": {
+    "./encoder": {
+      "import": "./dist/esm/encoder.mjs",
+      "require": "./dist/cjs/encoder.js"
+    },
+    "./decoder": {
+      "import": "./dist/esm/decoder.mjs",
+      "require": "./dist/cjs/decoder.js"
+    },
+    "./wasm/encoder": {
+      "import": "./dist/wasm/encoder.wasm",
+      "require": "./dist/wasm/encoder.wasm"
+    },
+    "./wasm/decoder": {
+      "import": "./dist/wasm/decoder.wasm",
+      "require": "./dist/wasm/decoder.wasm"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/types/*"
+      ]
+    }
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@tsconfig/node20": "^20.1.2",
+    "@tsconfig/strictest": "^2.0.2",
+    "@types/node": "^20.8.8",
+    "rollup": "^4.1.4",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.6.2",
+    "typescript": "^5.2.2"
+  }
 }
