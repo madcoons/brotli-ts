@@ -1,6 +1,6 @@
 {
   "name": "brotli-ts",
-  "version": "0.0.101",
+  "version": "0.0.1",
   "description": "Brotli in JavaScript",
   "main": "index.js",
   "scripts": {

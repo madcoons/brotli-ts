@@ -1,0 +1,50 @@
+name: Release
+on:
+  push:
+    branches:
+      - "main"
+  workflow_dispatch:
+jobs:
+    Release:
+        runs-on: ubuntu-latest
+        concurrency: release
+        steps:
+        - uses: actions/checkout@v3.5.3
+
+        - name: Setup nodejs
+          uses: actions/setup-node@v3
+          with:
+            node-version: 20.x
+
+        - name: Get package version to VERSION env
+          run: node -e "console.log('VERSION=', require('./package.json').version);" >> $GITHUB_ENV
+
+        - uses: mukunku/tag-exists-action@v1.3.0
+          id: checkReleaseExists
+          with: 
+            tag: v${{ env.VERSION }}
+
+        - name: Build wasm
+          if: steps.checkReleaseExists.outputs.exists == 'false'
+          run: npm run build-wasm
+
+        - name: Pack package
+          if: steps.checkReleaseExists.outputs.exists == 'false'
+          run: npm pack
+
+        - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+          if: steps.checkReleaseExists.outputs.exists == 'false'
+          with:
+            title: brotli-ts v${{ env.VERSION }}
+            automatic_release_tag: v${{ env.VERSION }}
+            prerelease: false
+            draft: false 
+            files: |
+              brotli-ts-${{ env.VERSION }}.tgz
+            repo_token: "${{ secrets.GITHUB_TOKEN }}"
+
+        # - name: Publish npm
+        #   if: steps.checkReleaseExists.outputs.exists == 'false'
+        #   run: npm publish
+        #   env:
+        #       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
