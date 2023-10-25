@@ -4,7 +4,7 @@
   "description": "Brotli in JavaScript",
   "main": "index.js",
   "scripts": {
-    "build-wasm": "docker build --build-arg='BROTLI_TAG=v1.1.0' build-wasm -t brotli-build:latest && docker create --name temp_container brotli-build:latest && docker cp temp_container:/src/dist/brotli-encoder.wasm ./build-wasm/dist/brotli-encoder.wasm && docker cp temp_container:/src/dist/brotli-decoder.wasm ./build-wasm/dist/brotli-decoder.wasm && docker rm temp_container"
+    "build-wasm": "docker build build-wasm -t brotli-build:latest && docker create --name temp_container brotli-build:latest && docker cp temp_container:/src/dist/brotli-encoder.wasm ./build-wasm/dist/brotli-encoder.wasm && docker cp temp_container:/src/dist/brotli-decoder.wasm ./build-wasm/dist/brotli-decoder.wasm && docker rm temp_container"
   },
   "files": ["dist/**/*"],
   "exports": {

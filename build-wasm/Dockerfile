@@ -1,5 +1,3 @@
-ARG BROTLI_TAG=1.1.0
-
 FROM debian:12.2 as source
 RUN apt-get update -y && apt-get install -y git && apt-get clean
 WORKDIR /src
@@ -21,15 +19,6 @@ COPY encoder.c c/custom/enc/encoder.c
 COPY decoder.c c/custom/dec/decoder.c
 
 RUN mkdir dist
-# RUN emcc -s WASM=1 -s EXPORTED_FUNCTIONS=_encode -s MODULARIZE \
-#      -I./c/include \
-#      c/common/*.c \
-#     #  c/dec/*.c \
-#      c/enc/*.c \
-#      -o dist/brotli.js
-# RUN emcc -s WASM=1 -s EXPORTED_FUNCTIONS=_encode \
-#      c/enc/exported_encode.c \
-#      -o dist/brotli.js
 
 # compress
 RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_compress_buffer', '_free_buffer_result', '_malloc', '_free']" -s STANDALONE_WASM -s ALLOW_MEMORY_GROWTH -Oz \
@@ -48,8 +37,5 @@ RUN emcc --no-entry -s ENVIRONMENT=web -s EXPORTED_FUNCTIONS="['_decompress_buff
      c/dec/*.c \
      c/custom/dec/decoder.c \
      -o dist/brotli-decoder.wasm
-
-# RUN apt-get update -y && apt-get install -y wabt
-# RUN wasm-objdump -x dist/brotli.wasm | grep "import" && exit 1
 
 # RUN ls -l /src/dist && exit 1
