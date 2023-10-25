@@ -51,8 +51,8 @@ jobs:
               brotli-ts-${{ env.VERSION }}.tgz
             repo_token: "${{ secrets.GITHUB_TOKEN }}"
 
-        # - name: Publish npm
-        #   if: steps.checkReleaseExists.outputs.exists == 'false'
-        #   run: npm publish
-        #   env:
-        #       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        - name: Publish npm
+          if: steps.checkReleaseExists.outputs.exists == 'false'
+          run: npm publish brotli-ts-${{ env.VERSION }}.tgz
+          env:
+            NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
