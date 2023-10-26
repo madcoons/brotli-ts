@@ -34,12 +34,13 @@ export const ensureLoadedAsync = async (
     return encoder;
   }
 
-  const wasmBuffer = await wasmLoader();
+  const wasm = await wasmLoader();
+
   if (encoder) {
     return encoder;
   }
 
-  const module = await WebAssembly.instantiate(wasmBuffer, {
+  const importObject = {
     env: {
       emscripten_notify_memory_growth: () => {},
     },
@@ -48,7 +49,13 @@ export const ensureLoadedAsync = async (
         throw new Error(`Brotli failed with status ${status}.`);
       },
     },
-  });
+  };
+
+  const module =
+    wasm instanceof Uint8Array
+      ? await WebAssembly.instantiate(wasm, importObject)
+      : await WebAssembly.instantiateStreaming(wasm, importObject);
+
   if (encoder) {
     return encoder;
   }

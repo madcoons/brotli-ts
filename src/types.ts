@@ -1,1 +1,1 @@
-export type WasmLoader = () => Uint8Array | Promise<Uint8Array>;
+export type WasmLoader = () => Uint8Array | Promise<Uint8Array> | Response | Promise<Response>;
