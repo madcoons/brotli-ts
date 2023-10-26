@@ -1,6 +1,6 @@
 {
   "name": "brotli-ts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Brotli in JavaScript",
   "main": "index.js",
   "scripts": {
@@ -10,10 +10,12 @@
   "files": ["dist/**/*"],
   "exports": {
     "./encoder": {
+      "types": "./dist/types/encoder.d.ts",
       "import": "./dist/esm/encoder.mjs",
       "require": "./dist/cjs/encoder.js"
     },
     "./decoder": {
+      "types": "./dist/types/decoder.d.ts",
       "import": "./dist/esm/decoder.mjs",
       "require": "./dist/cjs/decoder.js"
     },
@@ -24,13 +26,6 @@
     "./wasm/decoder": {
       "import": "./dist/wasm/decoder.wasm",
       "require": "./dist/wasm/decoder.wasm"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/types/*"
-      ]
     }
   },
   "author": "",
