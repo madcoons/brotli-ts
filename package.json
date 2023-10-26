@@ -1,6 +1,6 @@
 {
   "name": "brotli-ts",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Brotli in JavaScript",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,13 @@
     "./wasm/decoder": {
       "import": "./dist/wasm/decoder.wasm",
       "require": "./dist/wasm/decoder.wasm"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/types/*"
+      ]
     }
   },
   "author": "",
