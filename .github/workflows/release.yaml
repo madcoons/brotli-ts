@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         concurrency: release
         steps:
-        - uses: actions/checkout@v3.5.3
+        - uses: actions/checkout@v4.1.1
 
         - name: Setup nodejs
           uses: actions/setup-node@v4
