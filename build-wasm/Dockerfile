@@ -7,7 +7,7 @@ RUN git submodule update --init --recursive
 
 # RUN ls -l . && exit 1
 
-FROM emscripten/emsdk:3.1.47
+FROM emscripten/emsdk:3.1.49
 COPY --from=source /src/brotli /src
 # RUN ls -l /src && exit 1
 
