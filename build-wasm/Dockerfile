@@ -1,4 +1,4 @@
-FROM debian:12.4 as source
+FROM debian:12.5 as source
 RUN apt-get update -y && apt-get install -y git && apt-get clean
 WORKDIR /src
 RUN git clone --depth=1 --branch=v1.1.0 https://github.com/google/brotli.git
